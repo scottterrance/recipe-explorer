@@ -13,7 +13,11 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 
 # Enable CORS
-CORS(app)
+# ✅ New - restricted to your URLs only
+CORS(app, origins=[
+    "http://localhost:3000",           # local dev
+    "https://your-app.netlify.app"     # replace with your real Netlify URL later
+])
 
 # Initialize JWT
 jwt = JWTManager(app)
