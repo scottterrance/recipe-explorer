@@ -155,19 +155,16 @@ const RecipeDetail = () => {
         )}
       </div>
 
-      {recipe.instructions && (
-        <div className="bg-white p-6 rounded-lg shadow-lg mt-6">
-          <h2 className="text-2xl font-bold mb-4">Instructions</h2>
-          <ol className="space-y-3">
-            {recipe.instructions.split('.').filter(Boolean).map((step, idx) => (
-              <li key={idx} className="flex">
-                <span className="font-bold mr-3 text-orange-500">{idx + 1}.</span>
-                <p>{step.trim()}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
+      {/* Instructions */}
+        {recipe.instructions && (
+            <div className="bg-white p-6 rounded-lg shadow-lg mt-6">
+                <h2 className="text-2xl font-bold mb-4">Instructions</h2>
+                <div 
+                className="prose max-w-none space-y-2"
+                dangerouslySetInnerHTML={{ __html: recipe.instructions }}
+                />
+            </div>
+        )}
     </div>
   );
 };
