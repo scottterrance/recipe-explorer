@@ -121,13 +121,14 @@ const RecipeDetail = () => {
             <button
               onClick={handleToggleFavorite}
               disabled={savingFavorite}
-              className={`px-6 py-3 rounded-lg font-bold transition ${
+              style={{ width: '160px' }}
+              className={`flex-shrink-0 ml-4 px-6 py-3 rounded-lg font-bold transition ${
                 isFavorited
                   ? 'bg-red-500 text-white'
                   : 'bg-gray-200 text-gray-800 hover:bg-red-500 hover:text-white'
               }`}
             >
-              {isFavorited ? '❤️ Favorited' : '🤍 Add to Favorites'}
+              {isFavorited ? 'Favorited' : 'Add to Favorites'}
             </button>
           </div>
         </div>
@@ -171,14 +172,10 @@ const RecipeDetail = () => {
       {recipe.instructions && (
         <div className="bg-white p-6 rounded-lg shadow-lg mt-6">
           <h2 className="text-2xl font-bold mb-4">Instructions</h2>
-          <ol className="space-y-3">
-            {recipe.instructions.split('.').filter(Boolean).map((step, idx) => (
-              <li key={idx} className="flex">
-                <span className="font-bold mr-3 text-orange-500">{idx + 1}.</span>
-                <p>{step.trim()}</p>
-              </li>
-            ))}
-          </ol>
+          <div
+            className="prose max-w-none space-y-2"
+            dangerouslySetInnerHTML={{ __html: recipe.instructions }}
+          />
         </div>
       )}
     </div>

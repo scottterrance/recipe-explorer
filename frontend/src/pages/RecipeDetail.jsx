@@ -120,7 +120,7 @@ const RecipeDetail = () => {
                   : 'bg-gray-200 text-gray-800 hover:bg-red-500 hover:text-white'
               }`}
             >
-              {isFavorited ? '❤️ Favorited' : '🤍 Add to Favorites'}
+              {isFavorited ? 'Favorited' : 'Favorites'}
             </button>
           </div>
         </div>
