@@ -13,7 +13,6 @@ const SearchBar = ({ onSearch, loading }) => {
     e.preventDefault();
     if (query.trim()) {
       onSearch({ query, cuisine, diet });
-      setQuery('');
     }
   };
 
