@@ -16,7 +16,7 @@ app.config.from_object(DevelopmentConfig)
 # ✅ New - restricted to your URLs only
 CORS(app, origins=[
     "http://localhost:3000",           # local dev
-    "https://your-app.netlify.app"     # replace with your real Netlify URL later
+    "https://recipe-explorer-development.netlify.app"     # replace with your real Netlify URL later
 ])
 
 # Initialize JWT
