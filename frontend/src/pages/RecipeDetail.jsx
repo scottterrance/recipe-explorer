@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import RecipeService from '../services/recipeService';
@@ -15,17 +15,7 @@ const RecipeDetail = () => {
   const [isFavorited, setIsFavorited] = useState(false);
   const [savingFavorite, setSavingFavorite] = useState(false);
 
-  useEffect(() => {
-    fetchRecipeDetails();
-  }, [recipeId]);
-
-  useEffect(() => {
-    if (isAuthenticated && recipe) {
-      checkFavoriteStatus();
-    }
-  }, [isAuthenticated, recipe]);
-
-  const fetchRecipeDetails = async () => {
+  const fetchRecipeDetails = useCallback(async () => {
     try {
       setLoading(true);
       const data = await RecipeService.getRecipeDetails(recipeId);
@@ -36,16 +26,26 @@ const RecipeDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [recipeId]);
 
-  const checkFavoriteStatus = async () => {
+  const checkFavoriteStatus = useCallback(async () => {
     try {
       const result = await FavoriteService.checkIsFavorited(recipeId);
       setIsFavorited(result.is_favorited);
     } catch (error) {
       console.error('Error checking favorite:', error);
     }
-  };
+  }, [recipeId]);
+
+  useEffect(() => {
+    fetchRecipeDetails();
+  }, [fetchRecipeDetails]);
+
+  useEffect(() => {
+    if (isAuthenticated && recipe) {
+      checkFavoriteStatus();
+    }
+  }, [isAuthenticated, recipe, checkFavoriteStatus]);
 
   const handleToggleFavorite = async () => {
     if (!isAuthenticated) {

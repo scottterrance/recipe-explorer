@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register, error: authError } = useAuth();
+  const { register } = useAuth();
 
   const [formData, setFormData] = useState({ 
     username: '', 
