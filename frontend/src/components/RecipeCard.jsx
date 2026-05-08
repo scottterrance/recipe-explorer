@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import FavoriteService from '../services/favoriteService';
@@ -13,20 +13,20 @@ const RecipeCard = ({ recipe }) => {
   const recipeTitle = recipe.title || recipe.recipe_title;
   const recipeImage = recipe.image || recipe.recipe_image;
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      checkFavoriteStatus();
-    }
-  }, [isAuthenticated, recipeId]);
-
-  const checkFavoriteStatus = async () => {
+  const checkFavoriteStatus = useCallback(async () => {
     try {
       const result = await FavoriteService.checkIsFavorited(recipeId);
       setIsFavorited(result.is_favorited);
     } catch (error) {
       console.error('Error checking favorite status:', error);
     }
-  };
+  }, [recipeId]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      checkFavoriteStatus();
+    }
+  }, [isAuthenticated, checkFavoriteStatus]);
 
   const handleToggleFavorite = async (e) => {
     e.stopPropagation();
