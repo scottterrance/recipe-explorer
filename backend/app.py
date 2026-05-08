@@ -53,5 +53,12 @@ def internal_error(error):
 def health():
     return {'status': 'Backend is running'}, 200
 
+@app.route('/')
+def home():
+    return {'message': 'Recipe Explorer Backend Running'}
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000, use_reloader=False)  # Add use_reloader=False
+    app.run(
+        host='0.0.0.0',
+        port=int(os.environ.get("PORT", 5000))
+    )
