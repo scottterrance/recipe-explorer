@@ -38,6 +38,16 @@ class RecipeService {
       throw error.response?.data || { error: 'Failed to load recipe' };
     }
   }
+
+  static async correctFoodName(query) {
+    try {
+      const response = await API.post('/recipes/correct-name', { query });
+      return response.data;
+    } catch (error) {
+      // If correction fails, return original query
+      return { corrected: query, was_corrected: false, original: query };
+    }
+  }
 }
 
 export default RecipeService;
