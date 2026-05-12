@@ -6,17 +6,21 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class DeepSeekClient:
-    BASE_URL = "https://api.deepseek.com/v1"
+    BASE_URL = "https://api.deepseek.com/chat/completions"
     API_KEY = os.getenv('DEEPSEEK_API_KEY')
 
     @staticmethod
     def correct_food_name(user_input):
+        api_key = os.getenv('DEEPSEEK_API_KEY')  # ✅ load inside method
+        print("API KEY:", repr(api_key))
+        
         try:
-            if not DeepSeekClient.API_KEY:
-                return {'corrected': user_input, 'was_corrected': False}, 200
-
+            if not api_key:
+                print("NO API KEY - returning original")
+                return {'corrected': user_input, 'was_corrected': False, 'original': user_input}, 200
+            
             headers = {
-                'Authorization': f'Bearer {DeepSeekClient.API_KEY}',
+                'Authorization': f'Bearer {api_key}',  # ✅ use local variable
                 'Content-Type': 'application/json'
             }
 
