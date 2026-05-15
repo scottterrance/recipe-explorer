@@ -105,3 +105,47 @@ Return exactly this JSON format:
         except Exception as e:
             print(f"Fridge AI exception: {e}")
             return []
+    
+    @staticmethod
+    def chat_with_recipe(recipe_title, recipe_context, user_message):
+        """AI Chatbot for a specific recipe"""
+        api_key = os.getenv('DEEPSEEK_API_KEY')
+        
+        if not api_key:
+            return "AI is temporarily unavailable. Please add your DeepSeek API key."
+
+        headers = {
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json'
+        }
+
+        prompt = f"""You are a helpful, friendly cooking assistant.
+Recipe: {recipe_title}
+
+Context: {recipe_context}
+
+User question: {user_message}
+
+Answer in a short, friendly, and helpful way. Be creative and practical."""
+
+        payload = {
+            "model": "deepseek-chat",
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 400,
+            "temperature": 0.7
+        }
+
+        try:
+            response = requests.post(
+                DeepSeekClient.BASE_URL,
+                headers=headers,
+                json=payload,
+                timeout=15
+            )
+            if response.status_code == 200:
+                return response.json()['choices'][0]['message']['content'].strip()
+            else:
+                return "Sorry, I couldn't get an answer right now."
+        except Exception as e:
+            print(f"Chatbot error: {e}")
+            return "Sorry, something went wrong with the AI."

@@ -50,3 +50,27 @@ Only return the JSON array. Be creative but realistic."""
     except Exception as e:
         print(f"Fridge AI error: {e}")
         return {'error': 'AI recipe generation failed. Please try again.'}, 500
+    
+@ai_bp.route('/chat', methods=['POST'])
+def recipe_chat():
+    """
+    AI Chatbot for any recipe
+    """
+    try:
+        data = request.get_json()
+        recipe_title = data.get('recipe_title', 'Recipe')
+        recipe_context = data.get('recipe_context', '')
+        user_message = data.get('message', '').strip()
+
+        if not user_message:
+            return {'error': 'Message is required'}, 400
+
+        answer = DeepSeekClient.chat_with_recipe(recipe_title, recipe_context, user_message)
+        
+        return jsonify({
+            "success": True,
+            "answer": answer
+        }), 200
+
+    except Exception as e:
+        return {'error': str(e)}, 500
