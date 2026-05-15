@@ -9,16 +9,7 @@ recipes_bp = Blueprint('recipes', __name__)
 @recipes_bp.route('/search', methods=['GET'])
 def search_recipes():
     """
-    Search for recipes
-    
-    Query parameters:
-    - query (required): Search term
-    - number (optional): Number of results (default: 10, max: 100)
-    - offset (optional): Pagination offset (default: 0)
-    - cuisine (optional): Cuisine type
-    - diet (optional): Diet type (vegetarian, vegan, etc.)
-    
-    Example: /api/recipes/search?query=pasta&number=5&cuisine=Italian
+    Search for recipes with automatic DeepSeek LLM spelling correction
     """
     try:
         # Extract parameters
@@ -31,25 +22,30 @@ def search_recipes():
         # Validate input
         if not query:
             return {'error': 'Query parameter is required'}, 400
-        
         if len(query) < 2:
             return {'error': 'Query must be at least 2 characters'}, 400
-        
         if number < 1 or number > 100:
             return {'error': 'Number must be between 1 and 100'}, 400
-        
         if offset < 0:
             return {'error': 'Offset must be non-negative'}, 400
-        
-        # Call Spoonacular API
+
+        # === LLM CORRECTION ===
+        correction = DeepSeekClient.correct_food_name(query)
+        corrected_query = correction.get('corrected', query)
+
+        # Call Spoonacular with corrected query
         result, status_code = SpoonacularClient.search_recipes(
-            query=query,
+            query=corrected_query,
             number=number,
             offset=offset,
             cuisine=cuisine,
             diet=diet
         )
-        
+
+        # Add correction info to the response so frontend can show "Did you mean"
+        if 'results' in result:
+            result['correction'] = correction
+
         return jsonify(result), status_code
     
     except Exception as e:

@@ -7,66 +7,58 @@ load_dotenv()
 
 class DeepSeekClient:
     BASE_URL = "https://api.deepseek.com/chat/completions"
-    API_KEY = os.getenv('DEEPSEEK_API_KEY')
 
     @staticmethod
     def correct_food_name(user_input):
-        api_key = os.getenv('DEEPSEEK_API_KEY')  # ✅ load inside method
-        print("API KEY:", repr(api_key))
-        
-        try:
-            if not api_key:
-                print("NO API KEY - returning original")
-                return {'corrected': user_input, 'was_corrected': False, 'original': user_input}, 200
-            
-            headers = {
-                'Authorization': f'Bearer {api_key}',  # ✅ use local variable
-                'Content-Type': 'application/json'
-            }
+        api_key = os.getenv('DEEPSEEK_API_KEY')
+        print(f"🔑 DeepSeek correcting: '{user_input}' | Key loaded: {'YES' if api_key else 'NO'}")
 
-            prompt = f"""You are a food name correction assistant.
-Take the user input and:
-- Detect typos or misspellings in food names
-- Correct them to the most likely proper spelling
-- Handle multi-word dishes (e.g., "chiken tikka masala" → "chicken tikka masala")
-- If completely unknown, return the original input unchanged
-- Preserve the original meaning as much as possible
+        if not api_key:
+            print("⚠️ No DeepSeek key → returning original")
+            return {'corrected': user_input, 'was_corrected': False, 'original': user_input}
+
+        headers = {
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json'
+        }
+
+        prompt = f"""You are an expert food name corrector.
+Fix spelling mistakes, typos, and return ONLY valid JSON.
 
 User input: "{user_input}"
 
-Respond ONLY in this exact JSON format, nothing else:
+Return exactly this JSON format:
 {{
-    "corrected": "corrected food name here",
+    "corrected": "proper food name",
     "was_corrected": true or false,
-    "original": "original input here"
+    "original": "{user_input}"
 }}"""
 
-            payload = {
-                "model": "deepseek-chat",
-                "messages": [
-                    {"role": "user", "content": prompt}
-                ],
-                "max_tokens": 100,
-                "temperature": 0.1
-            }
+        payload = {
+            "model": "deepseek-chat",
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 150,
+            "temperature": 0.0,
+            "response_format": {"type": "json_object"}
+        }
 
+        try:
             response = requests.post(
                 DeepSeekClient.BASE_URL,
                 headers=headers,
                 json=payload,
-                timeout=10
+                timeout=12
             )
 
             if response.status_code == 200:
                 content = response.json()['choices'][0]['message']['content']
-                # Clean response in case of markdown
-                content = content.strip().replace('```json', '').replace('```', '').strip()
-                result = json.loads(content)
-                return result, 200
+                result = json.loads(content.strip())
+                print(f"✅ DeepSeek corrected: '{user_input}' → '{result.get('corrected')}'")
+                return result
             else:
-                # If API fails, return original input
-                return {'corrected': user_input, 'was_corrected': False, 'original': user_input}, 200
+                print(f"❌ DeepSeek API error {response.status_code}")
+                return {'corrected': user_input, 'was_corrected': False, 'original': user_input}
 
         except Exception as e:
-            print(f"DeepSeek error: {str(e)}")
-            return {'corrected': user_input, 'was_corrected': False, 'original': user_input}, 200
+            print(f"DeepSeek exception: {e}")
+            return {'corrected': user_input, 'was_corrected': False, 'original': user_input}

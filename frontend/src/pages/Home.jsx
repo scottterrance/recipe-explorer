@@ -2,18 +2,24 @@ import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import RecipeCard from '../components/RecipeCard';
 import RecipeService from '../services/recipeService';
-import { ChefHat, Sparkles } from 'lucide-react';
+import { ChefHat, Sparkles, Search } from 'lucide-react';
+
+const popularSearches = ["pasta", "chicken", "pizza", "salad", "soup", "tacos", "curry", "smoothie"];
 
 const Home = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searched, setSearched] = useState(false);
+  const [lastQuery, setLastQuery] = useState('');
+  const [correction, setCorrection] = useState(null);
 
   const handleSearch = async (searchParams) => {
     try {
       setLoading(true);
       setError(null);
+      setLastQuery(searchParams.query);
+      setCorrection(null);
 
       const result = await RecipeService.searchRecipes(
         searchParams.query,
@@ -23,21 +29,25 @@ const Home = () => {
       );
 
       setRecipes(result.results || []);
+      setCorrection(result.correction || null);   // ← new
       setSearched(true);
     } catch (error) {
-      console.error('❌ Search error in Home:', error);
-      const errorMsg = error?.error || error?.message || 'Search failed. Please try again.';
-      setError(errorMsg);
+      console.error('❌ Search error:', error);
+      setError(error?.error || error?.message || 'Search failed');
       setRecipes([]);
-      setSearched(false);
+      setSearched(true);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSuggestionClick = (suggestion) => {
+    handleSearch({ query: suggestion });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* HERO SECTION */}
+      {/* HERO SECTION (same as before) */}
       <div className="bg-gradient-to-br from-primary via-orange-500 to-secondary py-24 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-6 py-3 rounded-3xl text-white mb-6">
@@ -54,9 +64,6 @@ const Home = () => {
 
           <SearchBar onSearch={handleSearch} loading={loading} />
         </div>
-        
-        {/* Decorative elements */}
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
       </div>
 
       <div className="max-w-6xl mx-auto px-6 py-16">
@@ -66,12 +73,25 @@ const Home = () => {
           </div>
         )}
 
-        {searched ? (
+        {searched && (
           <>
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-4xl font-bold">Results</h2>
+              <h2 className="text-4xl font-bold">Results for "{lastQuery}"</h2>
               <p className="text-gray-500">{recipes.length} recipes found</p>
             </div>
+
+            {/* === DID YOU MEAN? === */}
+            {correction && correction.was_corrected && (
+              <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-3xl flex items-center gap-3">
+                <span className="text-blue-600 dark:text-blue-400 font-medium">Did you mean?</span>
+                <button
+                  onClick={() => handleSuggestionClick(correction.corrected)}
+                  className="px-6 py-2 bg-white dark:bg-gray-800 hover:bg-blue-600 hover:text-white transition-all rounded-3xl font-semibold shadow-sm"
+                >
+                  {correction.corrected}
+                </button>
+              </div>
+            )}
 
             {recipes.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -80,17 +100,26 @@ const Home = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-20">
-                <p className="text-2xl text-gray-400">No recipes found</p>
-                <p className="text-gray-500 mt-2">Try different keywords or filters</p>
+              <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-3xl shadow-inner max-w-2xl mx-auto">
+                <Search className="w-16 h-16 mx-auto text-gray-300 mb-6" />
+                <h3 className="text-3xl font-semibold text-gray-400 mb-2">No recipes found</h3>
+                <p className="text-gray-500 mb-8">
+                  We couldn't find any recipes for <span className="font-medium">"{lastQuery}"</span>.
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  {popularSearches.map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className="px-5 py-2 bg-gray-100 hover:bg-primary hover:text-white dark:bg-gray-700 rounded-3xl text-sm transition-all"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </>
-        ) : (
-          <div className="text-center py-20">
-            <ChefHat className="w-16 h-16 mx-auto text-gray-300 mb-6" />
-            <p className="text-2xl text-gray-400">Start searching above 👆</p>
-          </div>
         )}
       </div>
     </div>
