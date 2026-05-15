@@ -5,6 +5,7 @@ from config import DevelopmentConfig
 from routes.ai import ai_bp
 from database import db
 import os
+print("🔑 SPOONACULAR KEY LOADED:", bool(os.getenv('SPOONACULAR_API_KEY')))
 print("SPOONACULAR KEY:", os.getenv('SPOONACULAR_API_KEY'))
 
 # Initialize Flask app
