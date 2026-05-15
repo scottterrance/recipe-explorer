@@ -16,7 +16,31 @@ const Home = () => {
   const [correction, setCorrection] = useState(null);
   const [showFridgeModal, setShowFridgeModal] = useState(false);
 
-  const handleSearch = async (searchParams) => { /* ... same as before ... */ };
+  const handleSearch = async (searchParams) => {
+    try {
+      setLoading(true);
+      setError(null);
+      setLastQuery(searchParams.query);
+      setCorrection(null);
+
+      const result = await RecipeService.searchRecipes(
+        searchParams.query,
+        12,
+        searchParams.cuisine || null,
+        searchParams.diet || null
+      );
+
+      setRecipes(result.results || []);
+      setCorrection(result.correction || null);
+      setSearched(true);
+    } catch (err) {
+      setError(err?.error || 'Search failed');
+      setRecipes([]);
+      setSearched(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSuggestionClick = (suggestion) => {
     handleSearch({ query: suggestion });
@@ -24,54 +48,38 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* HERO SECTION */}
-      <div className="bg-gradient-to-br from-primary via-orange-500 to-secondary py-24 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
+      <div className="bg-gradient-to-br from-primary via-orange-500 to-secondary py-24">
+        <div className="max-w-6xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-6 py-3 rounded-3xl text-white mb-6">
             <Sparkles className="w-5 h-5" />
-            <span className="text-sm font-medium tracking-widest">POWERED BY AI + SPOONACULAR</span>
+            <span className="text-sm font-medium tracking-widest">POWERED BY AI</span>
           </div>
-          
           <h1 className="text-6xl md:text-7xl font-bold text-white tracking-tighter mb-6">
             Find your next<br />favorite recipe
           </h1>
-          <p className="text-xl text-white/90 max-w-lg mx-auto mb-10">
-            Thousands of delicious recipes. Smart AI suggestions. Your personal cooking companion.
-          </p>
-
           <SearchBar onSearch={handleSearch} loading={loading} />
 
-          {/* Fridge Button - Hero Feature */}
           <button
             onClick={() => setShowFridgeModal(true)}
-            className="mt-8 inline-flex items-center gap-3 bg-white text-gray-900 hover:bg-amber-100 px-8 py-4 rounded-3xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all"
+            className="mt-8 inline-flex items-center gap-3 bg-white text-gray-900 hover:bg-amber-100 px-8 py-4 rounded-3xl font-semibold text-lg shadow-xl"
           >
             <Refrigerator className="w-6 h-6" />
-            What's in my Fridge?
-            <span className="text-amber-500">→ AI Magic</span>
+            What's in my Fridge? <span className="text-amber-500">→ AI Magic</span>
           </button>
         </div>
       </div>
 
-      {/* Rest of the page (search results) stays the same */}
       <div className="max-w-6xl mx-auto px-6 py-16">
-        {/* ... your existing search results code ... */}
         {searched && (
           <>
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex justify-between mb-8">
               <h2 className="text-4xl font-bold">Results for "{lastQuery}"</h2>
               <p className="text-gray-500">{recipes.length} recipes found</p>
             </div>
 
             {correction && correction.was_corrected && (
-              <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-3xl flex items-center gap-3">
-                <span className="text-blue-600 dark:text-blue-400 font-medium">Did you mean?</span>
-                <button
-                  onClick={() => handleSuggestionClick(correction.corrected)}
-                  className="px-6 py-2 bg-white dark:bg-gray-800 hover:bg-blue-600 hover:text-white transition-all rounded-3xl font-semibold shadow-sm"
-                >
-                  {correction.corrected}
-                </button>
+              <div className="mb-8 p-4 bg-blue-50 rounded-3xl flex items-center gap-3">
+                Did you mean? <button onClick={() => handleSuggestionClick(correction.corrected)} className="font-semibold underline">{correction.corrected}</button>
               </div>
             )}
 
@@ -82,16 +90,15 @@ const Home = () => {
                 ))}
               </div>
             ) : (
-              /* empty state remains the same */
-              <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-3xl shadow-inner max-w-2xl mx-auto">
-                {/* ... existing empty state ... */}
+              <div className="text-center py-20">
+                <Search className="w-16 h-16 mx-auto text-gray-300 mb-6" />
+                <h3 className="text-3xl font-semibold text-gray-400">No recipes found</h3>
               </div>
             )}
           </>
         )}
       </div>
 
-      {/* Fridge Modal */}
       <FridgeModal 
         isOpen={showFridgeModal} 
         onClose={() => setShowFridgeModal(false)} 

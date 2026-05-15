@@ -15,9 +15,11 @@ app.config.from_object(DevelopmentConfig)
 
 # Enable CORS
 # ✅ New - restricted to your URLs only
+# Enable CORS - updated for production
 CORS(app, origins=[
-    "http://localhost:3000",           # local dev
-    "https://recipe-explorer-development.netlify.app"     # replace with your real Netlify URL later
+    "http://localhost:3000",                    # local dev
+    "https://recipe-explorer-development.netlify.app",   # your current Netlify
+    "https://your-final-domain.netlify.app"     # ← change this after you deploy
 ])
 
 # Initialize JWT
