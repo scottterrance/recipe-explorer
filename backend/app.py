@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import DevelopmentConfig
+from routes.ai import ai_bp
 from database import db
 import os
 print("SPOONACULAR KEY:", os.getenv('SPOONACULAR_API_KEY'))
@@ -30,6 +31,7 @@ from routes.favorites import favorites_bp
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(recipes_bp, url_prefix='/api/recipes')
 app.register_blueprint(favorites_bp, url_prefix='/api/favorites')
+app.register_blueprint(ai_bp, url_prefix='/api/ai')
 
 # Error handlers
 @app.errorhandler(400)

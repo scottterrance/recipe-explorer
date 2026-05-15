@@ -62,3 +62,46 @@ Return exactly this JSON format:
         except Exception as e:
             print(f"DeepSeek exception: {e}")
             return {'corrected': user_input, 'was_corrected': False, 'original': user_input}
+    
+    @staticmethod
+    def generate_recipes_from_ingredients(prompt):
+        """Generate creative recipes from fridge ingredients"""
+        api_key = os.getenv('DEEPSEEK_API_KEY')
+        
+        if not api_key:
+            return [{"title": "AI temporarily unavailable", "description": "Please add your DeepSeek key in .env", "time": "5 min", "servings": 1, "difficulty": "Easy", "ingredients_used": [], "why_it_works": "Fallback mode"}]
+
+        headers = {
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json'
+        }
+
+        payload = {
+            "model": "deepseek-chat",
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 800,
+            "temperature": 0.7,
+            "response_format": {"type": "json_object"}
+        }
+
+        try:
+            response = requests.post(
+                DeepSeekClient.BASE_URL,
+                headers=headers,
+                json=payload,
+                timeout=20
+            )
+
+            if response.status_code == 200:
+                content = response.json()['choices'][0]['message']['content']
+                recipes = json.loads(content.strip())
+                # Handle both array and object formats
+                if isinstance(recipes, dict) and "recipes" in recipes:
+                    return recipes["recipes"]
+                return recipes if isinstance(recipes, list) else [recipes]
+            else:
+                print(f"DeepSeek fridge error: {response.status_code}")
+                return []
+        except Exception as e:
+            print(f"Fridge AI exception: {e}")
+            return []

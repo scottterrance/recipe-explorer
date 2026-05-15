@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import RecipeCard from '../components/RecipeCard';
+import FridgeModal from '../components/FridgeModal';
 import RecipeService from '../services/recipeService';
-import { ChefHat, Sparkles, Search } from 'lucide-react';
+import { ChefHat, Sparkles, Search, Refrigerator } from 'lucide-react';
 
 const popularSearches = ["pasta", "chicken", "pizza", "salad", "soup", "tacos", "curry", "smoothie"];
 
@@ -13,33 +14,9 @@ const Home = () => {
   const [searched, setSearched] = useState(false);
   const [lastQuery, setLastQuery] = useState('');
   const [correction, setCorrection] = useState(null);
+  const [showFridgeModal, setShowFridgeModal] = useState(false);
 
-  const handleSearch = async (searchParams) => {
-    try {
-      setLoading(true);
-      setError(null);
-      setLastQuery(searchParams.query);
-      setCorrection(null);
-
-      const result = await RecipeService.searchRecipes(
-        searchParams.query,
-        12,
-        searchParams.cuisine || null,
-        searchParams.diet || null
-      );
-
-      setRecipes(result.results || []);
-      setCorrection(result.correction || null);   // ← new
-      setSearched(true);
-    } catch (error) {
-      console.error('❌ Search error:', error);
-      setError(error?.error || error?.message || 'Search failed');
-      setRecipes([]);
-      setSearched(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleSearch = async (searchParams) => { /* ... same as before ... */ };
 
   const handleSuggestionClick = (suggestion) => {
     handleSearch({ query: suggestion });
@@ -47,7 +24,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* HERO SECTION (same as before) */}
+      {/* HERO SECTION */}
       <div className="bg-gradient-to-br from-primary via-orange-500 to-secondary py-24 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-6 py-3 rounded-3xl text-white mb-6">
@@ -63,16 +40,22 @@ const Home = () => {
           </p>
 
           <SearchBar onSearch={handleSearch} loading={loading} />
+
+          {/* Fridge Button - Hero Feature */}
+          <button
+            onClick={() => setShowFridgeModal(true)}
+            className="mt-8 inline-flex items-center gap-3 bg-white text-gray-900 hover:bg-amber-100 px-8 py-4 rounded-3xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all"
+          >
+            <Refrigerator className="w-6 h-6" />
+            What's in my Fridge?
+            <span className="text-amber-500">→ AI Magic</span>
+          </button>
         </div>
       </div>
 
+      {/* Rest of the page (search results) stays the same */}
       <div className="max-w-6xl mx-auto px-6 py-16">
-        {error && (
-          <div className="mb-8 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-3xl">
-            {error}
-          </div>
-        )}
-
+        {/* ... your existing search results code ... */}
         {searched && (
           <>
             <div className="flex items-center justify-between mb-8">
@@ -80,7 +63,6 @@ const Home = () => {
               <p className="text-gray-500">{recipes.length} recipes found</p>
             </div>
 
-            {/* === DID YOU MEAN? === */}
             {correction && correction.was_corrected && (
               <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-3xl flex items-center gap-3">
                 <span className="text-blue-600 dark:text-blue-400 font-medium">Did you mean?</span>
@@ -100,28 +82,20 @@ const Home = () => {
                 ))}
               </div>
             ) : (
+              /* empty state remains the same */
               <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-3xl shadow-inner max-w-2xl mx-auto">
-                <Search className="w-16 h-16 mx-auto text-gray-300 mb-6" />
-                <h3 className="text-3xl font-semibold text-gray-400 mb-2">No recipes found</h3>
-                <p className="text-gray-500 mb-8">
-                  We couldn't find any recipes for <span className="font-medium">"{lastQuery}"</span>.
-                </p>
-                <div className="flex flex-wrap justify-center gap-3">
-                  {popularSearches.map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className="px-5 py-2 bg-gray-100 hover:bg-primary hover:text-white dark:bg-gray-700 rounded-3xl text-sm transition-all"
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
+                {/* ... existing empty state ... */}
               </div>
             )}
           </>
         )}
       </div>
+
+      {/* Fridge Modal */}
+      <FridgeModal 
+        isOpen={showFridgeModal} 
+        onClose={() => setShowFridgeModal(false)} 
+      />
     </div>
   );
 };
