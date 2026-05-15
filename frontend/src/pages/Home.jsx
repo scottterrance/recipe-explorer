@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import RecipeCard from '../components/RecipeCard';
 import RecipeService from '../services/recipeService';
+import { ChefHat, Sparkles } from 'lucide-react';
 
 const Home = () => {
   const [recipes, setRecipes] = useState([]);
@@ -10,78 +11,85 @@ const Home = () => {
   const [searched, setSearched] = useState(false);
 
   const handleSearch = async (searchParams) => {
-  try {
-    setLoading(true);
-    setError(null);
+    try {
+      setLoading(true);
+      setError(null);
 
-    console.log('🔍 Starting search:', searchParams);
+      const result = await RecipeService.searchRecipes(
+        searchParams.query,
+        12,
+        searchParams.cuisine || null,
+        searchParams.diet || null
+      );
 
-    const result = await RecipeService.searchRecipes(
-      searchParams.query,
-      12,
-      searchParams.cuisine || null,
-      searchParams.diet || null
-    );
-
-    console.log('✅ Search completed, recipes:', result.results?.length);
-    setRecipes(result.results || []);
-    setSearched(true);
-  } catch (error) {
-    console.error('❌ Search error in Home:', error);
-    
-    // Show error message but DON'T redirect
-    const errorMsg = error?.error || error?.message || 'Search failed. Please try again.';
-    setError(errorMsg);
-    
-    // ⚠️ Don't redirect anywhere - stay on this page
-    setRecipes([]);
-    setSearched(false);
-  } finally {
-    setLoading(false);
-  }
-};
+      setRecipes(result.results || []);
+      setSearched(true);
+    } catch (error) {
+      console.error('❌ Search error in Home:', error);
+      const errorMsg = error?.error || error?.message || 'Search failed. Please try again.';
+      setError(errorMsg);
+      setRecipes([]);
+      setSearched(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-red-500 to-orange-500 py-12">
-        <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-white text-5xl font-bold mb-2">Recipe Explorer</h1>
-          <p className="text-white text-xl">Discover delicious recipes from around the world</p>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      {/* HERO SECTION */}
+      <div className="bg-gradient-to-br from-primary via-orange-500 to-secondary py-24 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
+          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-6 py-3 rounded-3xl text-white mb-6">
+            <Sparkles className="w-5 h-5" />
+            <span className="text-sm font-medium tracking-widest">POWERED BY AI + SPOONACULAR</span>
+          </div>
+          
+          <h1 className="text-6xl md:text-7xl font-bold text-white tracking-tighter mb-6">
+            Find your next<br />favorite recipe
+          </h1>
+          <p className="text-xl text-white/90 max-w-lg mx-auto mb-10">
+            Thousands of delicious recipes. Smart AI suggestions. Your personal cooking companion.
+          </p>
+
+          <SearchBar onSearch={handleSearch} loading={loading} />
         </div>
+        
+        {/* Decorative elements */}
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <SearchBar onSearch={handleSearch} loading={loading} />
-
+      <div className="max-w-6xl mx-auto px-6 py-16">
         {error && (
-          <div className="mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <div className="mb-8 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-3xl">
             {error}
           </div>
         )}
 
-        {searched && (
-          <div className="mt-12">
-            <h2 className="text-3xl font-bold mb-6">
-              {recipes.length} Recipes Found
-            </h2>
+        {searched ? (
+          <>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-4xl font-bold">Results</h2>
+              <p className="text-gray-500">{recipes.length} recipes found</p>
+            </div>
 
             {recipes.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {recipes.map((recipe) => (
                   <RecipeCard key={recipe.id} recipe={recipe} />
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-12">
-                No recipes found. Try a different search term!
-              </p>
+              <div className="text-center py-20">
+                <p className="text-2xl text-gray-400">No recipes found</p>
+                <p className="text-gray-500 mt-2">Try different keywords or filters</p>
+              </div>
             )}
-          </div>
-        )}
-
-        {!searched && (
-          <div className="text-center py-20 text-gray-500">
-            <p className="text-xl">Start searching for recipes above!</p>
+          </>
+        ) : (
+          <div className="text-center py-20">
+            <ChefHat className="w-16 h-16 mx-auto text-gray-300 mb-6" />
+            <p className="text-2xl text-gray-400">Start searching above 👆</p>
           </div>
         )}
       </div>
