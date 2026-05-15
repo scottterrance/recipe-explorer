@@ -4,7 +4,7 @@ import RecipeCard from '../components/RecipeCard';
 import FridgeModal from '../components/FridgeModal';
 import FavoriteService from '../services/favoriteService';
 import RecipeService from '../services/recipeService';
-import { ChefHat, Heart, Sparkles, Refrigerator, Search } from 'lucide-react';
+import { Heart, Sparkles, Refrigerator } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();

@@ -15,8 +15,6 @@ const RecipeDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFavorited, setIsFavorited] = useState(false);
-  const [savingFavorite, setSavingFavorite] = useState(false);
-
   // Chatbot state
   const [showChat, setShowChat] = useState(false);
   const [messages, setMessages] = useState([]);

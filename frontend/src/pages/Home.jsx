@@ -2,18 +2,14 @@ import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import RecipeCard from '../components/RecipeCard';
 import FridgeModal from '../components/FridgeModal';
-import RecipeService from '../services/recipeService';
-import { ChefHat, Sparkles, Search, Refrigerator } from 'lucide-react';
-
-const popularSearches = ["pasta", "chicken", "pizza", "salad", "soup", "tacos", "curry", "smoothie"];
+import { Sparkles, Refrigerator } from 'lucide-react';
 
 const Home = () => {
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [searched, setSearched] = useState(false);
-  const [lastQuery, setLastQuery] = useState('');
-  const [correction, setCorrection] = useState(null);
+  const [recipes] = useState([]);
+  const [loading] = useState(false);
+  const [searched] = useState(false);
+  const [lastQuery] = useState('');
+  const [correction] = useState(null);
   const [showFridgeModal, setShowFridgeModal] = useState(false);
 
   const handleSearch = async (searchParams) => { /* ... same as before ... */ };
