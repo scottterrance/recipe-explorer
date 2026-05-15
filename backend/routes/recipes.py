@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from utils.spoonacular import SpoonacularClient
+from utils.deepseek import DeepSeekClient
 
 recipes_bp = Blueprint('recipes', __name__)
 
@@ -109,3 +110,30 @@ def search_by_ingredients():
     
     except Exception as e:
         return {'error': f'Search failed: {str(e)}'}, 500
+    
+@recipes_bp.route('/correct-name', methods=['POST'])
+def correct_recipe_name():
+    """
+    Correct food name typos using DeepSeek AI
+    
+    Request body:
+    {
+        "query": "chiken tikka masala"
+    }
+    """
+    try:
+        data = request.get_json()
+        
+        if not data or not data.get('query'):
+            return {'error': 'Query is required'}, 400
+        
+        query = data.get('query', '').strip()
+        
+        if len(query) < 2:
+            return {'error': 'Query too short'}, 400
+        
+        result, status_code = DeepSeekClient.correct_food_name(query)
+        return jsonify(result), status_code
+    
+    except Exception as e:
+        return {'error': f'Correction failed: {str(e)}'}, 500

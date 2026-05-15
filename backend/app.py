@@ -57,8 +57,10 @@ def health():
 def home():
     return {'message': 'Recipe Explorer Backend Running'}
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(
-        host='0.0.0.0',
-        port=int(os.environ.get("PORT", 5000))
+        host="0.0.0.0",
+        port=5000,
+        debug=True,
+        use_reloader=False  # <--- THIS FIXES THE WINERROR
     )
