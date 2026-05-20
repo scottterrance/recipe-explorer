@@ -2,8 +2,9 @@
 
 **Full-stack recipe discovery app** with user authentication, favorites, smart search, and AI-powered recipe suggestions.
 
-![Demo](<img width="1879" height="795" alt="Screenshot 2026-05-19 203436" src="https://github.com/user-attachments/assets/131749a9-16cf-4b8c-bea3-e68edacfff94" />
-)  
+![Demo](https://via.placeholder.com/800x400/10b981/ffffff?text=Recipe+Explorer+Demo)  
+*![demo](<img width="1879" height="795" alt="Screenshot 2026-05-19 203436" src="https://github.com/user-attachments/assets/7a63cee2-f9fb-48e3-b38f-192eaaa018f2" />
+)*
 
 ## ✨ Features
 
