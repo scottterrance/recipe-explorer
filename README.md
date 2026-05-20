@@ -2,8 +2,8 @@
 
 **Full-stack recipe discovery app** with user authentication, favorites, smart search, and AI-powered recipe suggestions.
 
-![Demo](https://via.placeholder.com/800x400/10b981/ffffff?text=Recipe+Explorer+Demo)  
-*![demo](<Screenshot 2026-05-19 203436.png>)*
+![Demo](<img width="1879" height="795" alt="Screenshot 2026-05-19 203436" src="https://github.com/user-attachments/assets/131749a9-16cf-4b8c-bea3-e68edacfff94" />
+)  
 
 ## ✨ Features
 
@@ -61,7 +61,7 @@ The backend exposes a clean REST API with JWT authentication. All endpoints are 
 
 ## 📸 Screenshots
 
-*![dashboard](<Screenshot 2026-05-19 205039.png>) ![LLMs search](<Screenshot 2026-05-19 203436-1.png>) ![fridge food](<Screenshot 2026-05-19 203622.png>)*
+*<img width="1879" height="795" alt="Screenshot 2026-05-19 203436" src="https://github.com/user-attachments/assets/9e715bc0-4a33-4fe1-8e87-8fcf7fd30a11" /><img width="1189" height="775" alt="Screenshot 2026-05-19 203622" src="https://github.com/user-attachments/assets/01f4dbbe-a171-4dec-8017-b97e4c2eee38" /><img width="685" height="833" alt="Screenshot 2026-05-19 205039" src="https://github.com/user-attachments/assets/9b24bf6b-f2f9-4b48-abf6-8b7a46dc8228" />*
 
 ## 🧪 Local Setup
 
