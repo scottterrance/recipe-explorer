@@ -5,6 +5,7 @@ load_dotenv()
 
 class Config:
     """Base configuration"""
+    SECRET_KEY = os.getenv("SECRET_KEY")
     MONGODB_URI = os.getenv('MONGODB_URI')
     SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
