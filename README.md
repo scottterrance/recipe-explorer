@@ -29,11 +29,14 @@
 **Extras**: JWT, OpenAI, Spoonacular, Gunicorn, Render
 
 ## 🚀 Live Demo
-**[→ Open Live App](https://your-frontend.netlify.app)** (update after deploy)
+**[→ Open Live App](https://recipe-explorer-development.netlify.app)** (update after deploy)
 
 ## 📸 Screenshots
 
-*(Add 3–4 screenshots here after deployment)*
+*<img width="1879" height="795" alt="image" src="https://github.com/user-attachments/assets/2702285c-c041-4df1-aa87-c79845ffb013" />
+<img width="1189" height="775" alt="image" src="https://github.com/user-attachments/assets/de8eb740-d0a7-41b4-9ff5-12d5d1a2bcea" />
+<img width="685" height="833" alt="image" src="https://github.com/user-attachments/assets/fa6c34fe-da78-4793-9257-35225954ff94" />
+*
 
 ## 🧪 Local Setup
 
