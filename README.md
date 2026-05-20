@@ -3,7 +3,7 @@
 **Full-stack recipe discovery app** with user authentication, favorites, smart search, and AI-powered recipe suggestions.
 
 ![Demo](https://via.placeholder.com/800x400/10b981/ffffff?text=Recipe+Explorer+Demo)  
-*(Replace with your live demo GIF after deployment)*
+*![demo](<Screenshot 2026-05-19 203436.png>)*
 
 ## ✨ Features
 
@@ -57,11 +57,11 @@ The backend exposes a clean REST API with JWT authentication. All endpoints are 
 > **All protected routes require** `Authorization: Bearer <jwt-token>` header.
 
 ## 🚀 Live Demo
-**[→ Open Live App](https://your-frontend.netlify.app)** (update after deploy)
+**[→ Open Live App](https://recipe-explorer-development.netlify.app)** (update after deploy)
 
 ## 📸 Screenshots
 
-*(Add 3–4 screenshots here after deployment)*
+*![dashboard](<Screenshot 2026-05-19 205039.png>) ![LLMs search](<Screenshot 2026-05-19 203436-1.png>) ![fridge food](<Screenshot 2026-05-19 203622.png>)*
 
 ## 🧪 Local Setup
 
