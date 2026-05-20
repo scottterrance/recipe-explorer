@@ -14,6 +14,34 @@
 - 📱 **Beautiful responsive UI** with Tailwind + Lucide icons
 - 🚀 **Production-ready** deployment configs
 
+## 📚 API Documentation
+
+![API Documentation](./api-docs.png)  
+*Beautiful interactive-style docs (dark theme with highlighted endpoints)*
+
+The backend exposes a clean REST API with JWT authentication. All endpoints are under `/api/`.
+
+### Authentication
+| Method | Endpoint                | Description          |
+|--------|-------------------------|----------------------|
+| `POST` | `/api/auth/register`    | Create new account   |
+| `POST` | `/api/auth/login`       | Login + receive JWT  |
+
+### Recipes & AI
+| Method | Endpoint                  | Description                  |
+|--------|---------------------------|------------------------------|
+| `GET`  | `/api/recipes/search`     | Search recipes (Spoonacular) |
+| `GET`  | `/api/ai/suggest`         | AI recipe ideas (OpenAI)     |
+
+### Favorites
+| Method | Endpoint           | Description             |
+|--------|--------------------|-------------------------|
+| `POST` | `/api/favorites`   | Add recipe to favorites |
+| `GET`  | `/api/favorites`   | Get user's favorites    |
+| `DELETE` | `/api/favorites/:id` | Remove from favorites |
+
+> **All protected routes require** `Authorization: Bearer <jwt-token>` header.
+
 ## 🛠 Tech Stack
 
 **Frontend**  
